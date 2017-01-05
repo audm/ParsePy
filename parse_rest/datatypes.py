@@ -439,7 +439,16 @@ class ParseResource(ParseBase):
 
     def _init_attrs(self, args):
         for key, value in six.iteritems(args):
-            setattr(self, key, ParseType.convert_from_parse(key, value))
+            val_converted = ParseType.convert_from_parse(key, value)
+            #print "val_converted: %s" % val_converted
+            if hasattr(self, key):
+                attr_current = getattr(self, key)
+                #print "getattr(self, '%s'): %r" % (key, attr_current)
+                if not attr_current == val_converted:
+                    setattr(self, key, val_converted)
+            else:
+                #print "self has no attr %s" % key
+                setattr(self, key, val_converted)
 
     def _to_native(self):
         return ParseType.convert_to_parse(self)
